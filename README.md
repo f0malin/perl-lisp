@@ -1,7 +1,7 @@
 perl-lisp
 =========
 
-A lisp variant implemented by perl.
+A lisp to perl compiler. It is insprired by the livescript project(http://livescript.net). 
 
 Run:
 
