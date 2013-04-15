@@ -56,4 +56,21 @@ will procude:
     print(Dumper($x), "\n");
     print($x->{"age"}, "\n");
 
+A async PSGI sample: 
+
+    (use AnyEvent)
+    
+    (closure '(env) '(
+                      (return (closure '(res) '(
+                                                (my w)
+                                                (= w (-> AnyEvent timer "after" 3 "cb" (closure '() '(
+                                                                                                  (call res
+                                                                                                     (list
+                                                                                                      200
+                                                                                                      (list "content-type" "text/plain")
+                                                                                                      (list "hello world\n")
+                                                                                                      ))
+                                                                                                  (undef w)
+                                                                                                  )))))))))
+
 Enjoy it!
