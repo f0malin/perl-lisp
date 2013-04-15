@@ -1,1 +1,2 @@
-test.pl
+test*.pl
+debug.log

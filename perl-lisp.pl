@@ -90,7 +90,7 @@ sub evaluate {
                        #return unless @symbols;
                        my @symbols2 = @symbols;
                        push @stack, \@symbols2;
-                       @symbols = ('list');
+                       @symbols = ("'");
                    }];
         } elsif ($c eq ')') {
             $ns = [0, 0, 2, -1];
@@ -183,6 +183,8 @@ sub make_statement {
         return $op . " " . shift . " " . join(",",@_);
     } elsif ($op eq 'list')  {
         check_args(1, \@_);
+        return "[" . join(",", @_) . "]";
+    } elsif ($op eq "'") {
         return \@_;
     } elsif ($op eq 'sub') {
         ### @_
@@ -191,7 +193,21 @@ sub make_statement {
         ### $block
         my $str =  "sub " . $name . " { my (" . join(", ", map {'$'.$_} @$args) . ') = @_;' . join("; " , @$block) . "}";
         return $str;
-    } else {
+    } elsif ($op eq '{}') {
+        return $_[0]."->{".$_[1]."}";
+    } elsif ($op eq '[]') {
+        return $_[0]."->[".$_[1]."]";
+    } elsif ($op eq 'my') {
+        return 'my $' . $_[0] . " = " . $_[1];
+    } elsif ($op eq 'dict') {
+        my $str = "{" . join(",", @_) . "}";
+        return $str;
+    } else {    # normal function
+        for (0 .. $#_) {
+            if ($_[$_] !~ /[\( ]/ && $_[$_] =~ /^[^\-0-9"]/) {
+                $_[$_] = '$' . $_[$_];
+            }
+        }
         return $op . "(" . join(", ", @_) . ")";
     }
 }

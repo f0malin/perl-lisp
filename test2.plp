@@ -1,0 +1,13 @@
+(use Data::Dumper "Dumper")
+
+(my x (dict
+       "name" "Achilles"
+       "age" 99
+       boards (list
+               "sama"
+               "diantian"
+               )))
+
+(print (Dumper x) "\n")
+
+(print ({} x "age") "\n")
