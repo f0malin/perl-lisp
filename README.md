@@ -30,7 +30,7 @@ Above code will produce:
     print(get("http://www.sina.com.cn"), "\n");
     print((5*(1+2)), "\n");
     print("hello world", "\n");
-    sub hello { my ($name1, $name2) = @_;print("hello ", name1, " and ", name2, "\n"); print("hello ", name2, " or  ", name1, "\n")};
+    sub hello { my ($name1, $name2) = @_;print("hello ", $name1, " and ", $name2, "\n"); print("hello ", $name2, " or  ", $name1, "\n")};
     hello("aaa", "bbb");
 
 
