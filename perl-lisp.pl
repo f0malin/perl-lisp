@@ -191,17 +191,45 @@ sub make_statement {
         check_args(3, \@_, 0, TYPE_LIST, TYPE_LIST);
         my ($name, $args, $block) = @_;
         ### $block
-        my $str =  "sub " . $name . " { my (" . join(", ", map {'$'.$_} @$args) . ') = @_;' . join("; " , @$block) . "}";
+        my $str;
+        if (scalar(@$args) > 0) {
+            $str =  "sub " . $name . " { my (" . join(", ", map {'$'.$_} @$args) . ') = @_;' . join("; " , @$block) . "}";
+        } else {
+            $str =  "sub " . $name . " { " . join("; " , @$block) . "}";
+        }
         return $str;
     } elsif ($op eq '{}') {
         return $_[0]."->{".$_[1]."}";
     } elsif ($op eq '[]') {
         return $_[0]."->[".$_[1]."]";
     } elsif ($op eq 'my') {
+        if (scalar(@_) == 1) {
+            return 'my $' . $_[0];
+        }
         return 'my $' . $_[0] . " = " . $_[1];
     } elsif ($op eq 'dict') {
         my $str = "{" . join(",", @_) . "}";
         return $str;
+    } elsif ($op eq 'closure') {
+        ### @_
+        check_args(2, \@_, TYPE_LIST, TYPE_LIST);
+        my ($args, $block) = @_;
+        ### $block
+        my $str;
+        if (scalar(@$args) > 0) {
+            $str =  "sub { my (" . join(", ", map {'$'.$_} @$args) . ') = @_;' . join("; " , @$block) . "}";
+        } else {
+            $str =  "sub { " . join("; " , @$block) . "}";
+        }
+        return $str;
+    } elsif ($op eq 'call') {
+        my ($func, @args) = @_;
+        return '$' . $func . '->('. join(",", @args) . ')';
+    } elsif ($op eq '=') {
+        return '$' . $_[0] . "=" . $_[1];
+    } elsif ($op eq '->') {
+        my ($o, $method, @args) = @_;
+        return $o . '->' . $method . '(' . join(",",@args) . ")";
     } else {    # normal function
         for (0 .. $#_) {
             if ($_[$_] !~ /[\( ]/ && $_[$_] =~ /^[^\-0-9"]/) {
